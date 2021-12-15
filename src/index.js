@@ -33,9 +33,13 @@ app.post("/account", (request, response) => {
 });
 
 app.get("/statement/:cpf", (request, response) => {
-  const { cpf } = request.params;
+  const { cpf } = request.params; // request.headers ou request.params passando "/statement/:cpf"
 
   const customer = customers.find((customer) => customer.cpf === cpf)
+
+  if (!customer) {
+    return response.status(400).json({ error: "Customer not found"})
+  }
 
   return response.json(customer.statement)
 });
