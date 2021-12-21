@@ -41,6 +41,7 @@ function getBalance(statement) {
   return balance;
 }
 
+// criar conta
 app.post("/account", (request, response) => {
   const { cpf, name } = request.body;
 
@@ -60,12 +61,14 @@ app.post("/account", (request, response) => {
   return response.status(201).send();
 });
 
+// buscar extrato bancário do cliente
 app.get("/statement", verifyIfExistsAccountCPF, (request, response) => {
   const {customer} = request;
 
   return response.json(customer.statement)
 });
 
+// deposito na conta
 app.post("/deposit", verifyIfExistsAccountCPF, (request, response) => {
   const { description, amount } = request.body;
 
@@ -83,6 +86,7 @@ app.post("/deposit", verifyIfExistsAccountCPF, (request, response) => {
   return response.status(201).send();
 })
 
+// saque da conta
 app.post("/withdraw", verifyIfExistsAccountCPF, (request, response) => {
   const { amount } = request.body;
   const { customer } = request; // pegar informações de quanto
@@ -104,6 +108,7 @@ app.post("/withdraw", verifyIfExistsAccountCPF, (request, response) => {
   return response.status(201).send()
 })
 
+// buscar extrato por data
 app.get("/statement/date", verifyIfExistsAccountCPF, (request, response) => {
   const {customer} = request;
   const { date } = request.query;
@@ -116,5 +121,21 @@ app.get("/statement/date", verifyIfExistsAccountCPF, (request, response) => {
 
   return response.json(statement)
 });
+
+// atualizar conta 
+app.put("/account", verifyIfExistsAccountCPF, (request, response) => {
+  const { name } = request.body;
+  const { customer } = request;
+
+  customer.name = name;
+
+  return response.status(201).send();
+})
+
+app.get("/account", verifyIfExistsAccountCPF, (request, response) => {
+  const { customer } = request;
+
+  return response.json(customer)
+})
 
 app.listen(3333);
